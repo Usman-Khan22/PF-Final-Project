@@ -9,7 +9,7 @@ void initGuessedWord(char* guessedWord, char* word);
 
 int main() {
 	printf("======HANGMAN GAME======\n");
-    char word[50], guessedWord[50];
+    char word[50], guessedWord[50], guessedLetters[50];
 	initGuessedWord(guessedWord, word);
     generateWord(word);
     return 0;
@@ -49,4 +49,14 @@ void initGuessedWord(char* guessedWord, char* word) {
         printf("%c ", guessedWord[i]);
     }
     guessedWord[len] = '\0';
+}
+
+void checkInput(char* guessesWord, char* guessedLetters) {
+	char guess = guessedLetters[strlen(guessedLetters) - 1];
+    printf("Make a guess: ");
+    scanf(" %c", &guess);
+    while (strchr(guessedLetters, guess)) {
+        printf("You already guessed that letter. Try again: ");
+        scanf(" %c", &guess);
+    }
 }
