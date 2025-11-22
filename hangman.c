@@ -14,7 +14,6 @@ int logic(char* word, char guess, char* guessedWord);
 void drawHangman(int wrong_attempts);
 
 int main() {
-	printf("======HANGMAN GAME======\n");
     char word[50], guessedWord[50], guessedLetters[50] = {'\0'};
     char guess;
     int wrong_attempts = 0;
@@ -22,27 +21,47 @@ int main() {
 
     generateWord(word);
     initGuessedWord(guessedWord, word);
+    
+    printf("=========- HANGMAN -=========\n");
+    printf("Welcome to The Hangman Game.\n\n");
+    printf("Please press Enter to continue...");
+    
+    getchar(); 
+    
+    system("cls"); 
+
+    printf("=========- HANGMAN -=========\n\n");
+    drawHangman(wrong_attempts);
+    printGuessedWord(guessedWord);
 
     while (1) {
-        printGuessedWord(guessedWord);
+    	
         guess = checkInput(guessedLetters, word);
+
+        system("cls");
+
+        printf("=========- HANGMAN -=========\n\n");
+
         wrong_attempts = logic(word, guess, guessedWord);
         drawHangman(wrong_attempts);
+
         if (strcmp(guessedWord, word) == 0) {
             printGuessedWord(guessedWord);
-            printf("Congratulations! You win\n");
+            printf("\nCongratulations! You win\n");
             break;
         }
 
         if (wrong_attempts == MAX_ATTEMPTS) {
-            printf("OOPS! You lost\n");
+            printf("\nOOPS! You lost\n");
             break;
         }
+        
+        printGuessedWord(guessedWord);
     }
-    printf("The word was: %s", word);
 
-    
-
+    printf("The word was: %s\n", word);
+    printf("-------------------\n");
+	printf("---Game Over---\n");
     return 0;
 }
 
@@ -186,8 +205,8 @@ void drawHangman(int wrong_attempts) {
             printf("\t\t\t  O   |\n");
             printf("\t\t\t /|\\  |\n");
             printf("\t\t\t      |\n");
-            printf("\t\t      |\n");
-            printf("\t\t=========\n");
+            printf("\t\t\t      |\n");
+            printf("\t\t\t=========\n");
             break;
 
         case 5:
