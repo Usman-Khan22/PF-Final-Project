@@ -6,13 +6,19 @@
 
 void generateWord(char* word);
 void initGuessedWord(char* guessedWord, char* word);
+int checkInput(char* guessedWord, char* guessedLetters, char* word, int wrong_attempts);
+void printGuessedWord(char* guessedWord);
 
 int main() {
 	printf("======HANGMAN GAME======\n");
     char word[50], guessedWord[50], guessedLetters[50];
-    int attempts = 0;
+    int wrong_attempts = 0;
+
 	initGuessedWord(guessedWord, word);
+    printGuessedWord(guessedWord);
     generateWord(word);
+    wrong_attempts = checkInput(guessedWord, guessedLetters, word, wrong_attempts);
+
     return 0;
 }
 
@@ -52,7 +58,7 @@ void initGuessedWord(char* guessedWord, char* word) {
     guessedWord[len] = '\0';
 }
 
-void checkInput(char* guessedWord, char* guessedLetters, char* word, int* attempts) {
+int checkInput(char* guessedWord, char* guessedLetters, char* word, int wrong_attempts) {
 	char guess = guessedLetters[strlen(guessedLetters) - 1];
     char* ptr = word;
     int i;
@@ -68,5 +74,14 @@ void checkInput(char* guessedWord, char* guessedLetters, char* word, int* attemp
         i = ptr - word;
         guessedWord[i] = guess;
     }
-    if (ptr == NULL) attempts++;
-} 
+    if (ptr == NULL) wrong_attempts++;
+    printGuessedWord(guessedWord);
+    return wrong_attempts;
+}
+
+void printGuessedWord(char* guessedWord) {
+    int i;
+    for (i = 0; i < strlen(guessedWord); i++) {
+        printf("%c", guessedWord);
+    }
+}
