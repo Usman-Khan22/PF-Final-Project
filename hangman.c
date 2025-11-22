@@ -22,7 +22,7 @@ int main() {
     generateWord(word);
     initGuessedWord(guessedWord, word);
     
-    printf("=========- HANGMAN -=========\n");
+    printf("=========- HANGMAN -=========\n\n");
     printf("Welcome to The Hangman Game.\n\n");
     printf("Please press Enter to continue...");
     
