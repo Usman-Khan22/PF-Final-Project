@@ -77,7 +77,7 @@ int main() {
 
         printf("The word was: %s\n", word);
         printf("-------------------\n");
-	    printf("---Game Over---\n");
+	    printf("----Game Over----\n");
         printf("====================\n\n");
         printf("Do you want to play again?: ");
         scanf("%s", again);
