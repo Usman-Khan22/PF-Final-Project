@@ -10,7 +10,7 @@ void initGuessedWord(char* guessedWord, char* word);
 void printGuessedWord(char* guessedWord);
 void addGuess(char* guessedLetters, char guess);
 char checkInput(char* guessedLetters);
-int logic(char* word, char guess, char* guessedWord);
+void logic(char* word, char guess, char* guessedWord, int* wrongattempts);
 void giveHint(int choice);
 void drawHangman(int wrong_attempts);
 
@@ -40,7 +40,7 @@ int main() {
     }
     generateWord(word, choice);
     initGuessedWord(guessedWord, word);
-
+	giveHint(choice);
     drawHangman(wrong_attempts);
     printGuessedWord(guessedWord);
 
@@ -55,7 +55,7 @@ int main() {
         printf("=========- HANGMAN -=========\n\n");
         giveHint(choice);
 
-        wrong_attempts = logic(word, guess, guessedWord);
+        logic(word, guess, guessedWord, &wrong_attempts);
         drawHangman(wrong_attempts);
 
         if (strcmp(guessedWord, word) == 0) {
@@ -79,67 +79,26 @@ int main() {
 }
 
 void generateWord(char* word, int choice) {
-    FILE *file1;
-    FILE *file2;
-    FILE *file3;
+    FILE *file;
     char arrWords[200][50];
     int size = 0, index;
     
-    switch(choice) {
-    	case 1:
-    		file1 = fopen("progLang.txt", "r");
+    if (choice == 1) file = fopen("progLang.txt", "r");
+    if (choice == 2) file = fopen("countries.txt", "r");
+    if (choice == 3) file = fopen("space.txt", "r");
     
-    		if (file1 == NULL) {
-    			printf("error in opening file\n");
-        		word[0] = '\0';
-    			return;
-			}
-	
-    		while (fgets(arrWords[size], sizeof(arrWords[size]), file1)) {
-    			size++;
-			}
-	
-    		fclose(file1);
-    		
-    		break;
-    		
-    		case 2:
-    			file2 = fopen("countries.txt", "r");
-    
-    		if (file2 == NULL) {
-    			printf("error in opening file\n");
-        		word[0] = '\0';
-    			return;
-			}
-	
-    		while (fgets(arrWords[size], sizeof(arrWords[size]), file2)) {
-    			size++;
-			}
-	
-    		fclose(file2);
-    			
-    			break;
-    		
-    		case 3:
-    			file3 = fopen("space.txt", "r");
-    
-    		if (file3 == NULL) {
-    			printf("error in opening file\n");
-        		word[0] = '\0';
-    			return;
-			}
-	
-    		while (fgets(arrWords[size], sizeof(arrWords[size]), file3)) {
-    			size++;
-			}
-	
-    		fclose(file3);
-    		
-    		break;
+    if (file == NULL) {
+    	printf("error in opening file\n");
+   		word[0] = '\0';
+    	return;
 	}
-    
-    
-    
+	
+    while (fgets(arrWords[size], sizeof(arrWords[size]), file)) {
+    	size++;
+	}
+	
+    fclose(file);
+
     index = rand() % size;
     strcpy(word, arrWords[index]);
     word[strcspn(word, "\n")] = '\0';     
@@ -165,30 +124,42 @@ void printGuessedWord(char* guessedWord) {
 
 void addGuess(char* guessedLetters, char guess) {
     int len = strlen(guessedLetters);
-    guessedLetters[len] = guess;
+    guessedLetters[len] = toupper(guess);
     guessedLetters[len + 1] = '\0';
 }
 
 
 char checkInput(char* guessedLetters) {
 	char guess;
-    int i, found = 0;
 
     printf("Make a guess: ");
     scanf(" %c", &guess);
+    while (!isalpha(guess)) {
+        printf("INVALID INPUT (A-Z only) - Try again: ");
+        scanf(" %c", &guess);
+    }
+
     guess = toupper(guess);
     while (strchr(guessedLetters, guess)) {
         printf("You already guessed that letter - Try again: ");
         scanf(" %c", &guess);
     }
+
+    while (!isalpha(guess)) {
+        printf("INVALID INPUT (A-Z only) - Try again: ");
+        scanf(" %c", &guess);
+    }
+
+    guess = toupper(guess);
+
     addGuess(guessedLetters, guess);
 
     return guess;
 }
 
-int logic(char* word, char guess, char* guessedWord) {
+void logic(char* word, char guess, char* guessedWord, int* wrong_attempts) {
     int i, found = 0;
-    static int wrong_attempts = 0;
+    
 
     for (i = 0; word[i] != '\0'; i++){
         if (word[i] == guess) {
@@ -197,10 +168,10 @@ int logic(char* word, char guess, char* guessedWord) {
         }
     }
     if (found == 0) {
-        wrong_attempts++;
+        (*wrong_attempts)++;
         printf("-------------\n");
         printf("oops! wrong guess\n");
-        printf("%d chances left\n", MAX_ATTEMPTS - wrong_attempts);
+        printf("%d chances left\n", MAX_ATTEMPTS - (*wrong_attempts));
         printf("-------------\n");
     }
     else {
@@ -209,7 +180,6 @@ int logic(char* word, char guess, char* guessedWord) {
         printf("-------------\n");
     }
     
-    return wrong_attempts;
 }
 
 void giveHint(int choice) {
