@@ -82,6 +82,8 @@ int main() {
         printf("Do you want to play again?: ");
         scanf("%s", again);
         for (i = 0; i < strlen(again); i++) again[i] = tolower(again[i]);
+        system("cls");
+        while (getchar() != '\n'); 
     } while (strcmp(again, "yes") == 0);
     return 0;
 }
