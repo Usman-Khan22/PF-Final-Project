@@ -5,22 +5,22 @@
 #include <ctype.h>
 #define MAX_ATTEMPTS 6
 
-void generateWord(char* word);
+void generateWord(char* word, int choice);
 void initGuessedWord(char* guessedWord, char* word);
 void printGuessedWord(char* guessedWord);
 void addGuess(char* guessedLetters, char guess);
-char checkInput(char* guessedLetters, char* word);
+char checkInput(char* guessedLetters);
 int logic(char* word, char guess, char* guessedWord);
+void giveHint(int choice);
 void drawHangman(int wrong_attempts);
 
 int main() {
     char word[50], guessedWord[50], guessedLetters[50] = {'\0'};
     char guess;
-    int wrong_attempts = 0;
+    int wrong_attempts = 0, choice;
     srand(time(NULL));
 
-    generateWord(word);
-    initGuessedWord(guessedWord, word);
+    
     
     printf("=========- HANGMAN -=========\n\n");
     printf("Welcome to The Hangman Game.\n\n");
@@ -31,16 +31,29 @@ int main() {
     system("cls"); 
 
     printf("=========- HANGMAN -=========\n\n");
+
+    printf("enter a number between 1-3: ");
+    scanf("%d", &choice);
+    while (choice < 1 || choice > 3){
+        printf("INVALID NUMBER - Please enter a number between 1-3: ");
+        scanf("%d", &choice);
+    }
+    generateWord(word, choice);
+    initGuessedWord(guessedWord, word);
+
     drawHangman(wrong_attempts);
     printGuessedWord(guessedWord);
 
+    
+
     while (1) {
     	
-        guess = checkInput(guessedLetters, word);
+        guess = checkInput(guessedLetters);
 
         system("cls");
 
         printf("=========- HANGMAN -=========\n\n");
+        giveHint(choice);
 
         wrong_attempts = logic(word, guess, guessedWord);
         drawHangman(wrong_attempts);
@@ -65,25 +78,67 @@ int main() {
     return 0;
 }
 
-void generateWord(char* word) {
-    FILE *fptr;
+void generateWord(char* word, int choice) {
+    FILE *file1;
+    FILE *file2;
+    FILE *file3;
     char arrWords[200][50];
     int size = 0, index;
     
+    switch(choice) {
+    	case 1:
+    		file1 = fopen("progLang.txt", "r");
     
-    fptr = fopen("words.txt", "r");
+    		if (file1 == NULL) {
+    			printf("error in opening file\n");
+        		word[0] = '\0';
+    			return;
+			}
+	
+    		while (fgets(arrWords[size], sizeof(arrWords[size]), file1)) {
+    			size++;
+			}
+	
+    		fclose(file1);
+    		
+    		break;
+    		
+    		case 2:
+    			file2 = fopen("countries.txt", "r");
     
-    if (fptr == NULL) {
-    	printf("error in opening file\n");
-        word[0] = '\0';
-    	return;
-	}
+    		if (file2 == NULL) {
+    			printf("error in opening file\n");
+        		word[0] = '\0';
+    			return;
+			}
 	
-    while (fgets(arrWords[size], sizeof(arrWords[size]), fptr)) {
-    	size++;
-	}
+    		while (fgets(arrWords[size], sizeof(arrWords[size]), file2)) {
+    			size++;
+			}
 	
-    fclose(fptr);
+    		fclose(file2);
+    			
+    			break;
+    		
+    		case 3:
+    			file3 = fopen("space.txt", "r");
+    
+    		if (file3 == NULL) {
+    			printf("error in opening file\n");
+        		word[0] = '\0';
+    			return;
+			}
+	
+    		while (fgets(arrWords[size], sizeof(arrWords[size]), file3)) {
+    			size++;
+			}
+	
+    		fclose(file3);
+    		
+    		break;
+	}
+    
+    
     
     index = rand() % size;
     strcpy(word, arrWords[index]);
@@ -115,7 +170,7 @@ void addGuess(char* guessedLetters, char guess) {
 }
 
 
-char checkInput(char* guessedLetters, char* word) {
+char checkInput(char* guessedLetters) {
 	char guess;
     int i, found = 0;
 
@@ -142,11 +197,11 @@ int logic(char* word, char guess, char* guessedWord) {
         }
     }
     if (found == 0) {
+        wrong_attempts++;
         printf("-------------\n");
         printf("oops! wrong guess\n");
-        printf("%d chances left\n", MAX_ATTEMPTS - 1 - wrong_attempts);
+        printf("%d chances left\n", MAX_ATTEMPTS - wrong_attempts);
         printf("-------------\n");
-        wrong_attempts++;
     }
     else {
         printf("-------------\n");
@@ -155,6 +210,12 @@ int logic(char* word, char guess, char* guessedWord) {
     }
     
     return wrong_attempts;
+}
+
+void giveHint(int choice) {
+    if (choice == 1) printf("HINT: IT IS A PROGRAMMING LANGUAGE\n");
+    else if (choice == 2) printf("HINT: IT IS A COUNTRY\n");
+    else if (choice == 3) printf("HINT: IT IS A CELESTIAL BODY\n");
 }
 
 void drawHangman(int wrong_attempts) {
