@@ -35,7 +35,7 @@ int main() {
 
         printf("=========- HANGMAN -=========\n\n");
 
-        printf("enter a number between 1-3: ");
+        printf("enter a number between 1-3 (Trust me ;) ): ");
         scanf("%d", &choice);
         while (choice < 1 || choice > 3){
             printf("INVALID NUMBER - Please enter a number between 1-3: ");
