@@ -79,7 +79,7 @@ int main() {
         printf("-------------------\n");
 	    printf("----Game Over----\n");
         printf("====================\n\n");
-        printf("Do you want to play again?: ");
+        printf("Do you want to play again? (Yes or No): ");
         scanf("%s", again);
         for (i = 0; i < strlen(again); i++) again[i] = tolower(again[i]);
         system("cls");
